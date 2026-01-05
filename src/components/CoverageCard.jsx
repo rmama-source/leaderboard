@@ -3,8 +3,8 @@ import React from 'react';
 
 const CoverageCard = ({ item, showPublication = false }) => {
   // Debug: log the item to see what data we're getting
-  console.log('CoverageCard item:', item);
-  console.log('CoverageCard URL:', item.url);
+  // console.log('CoverageCard item:', item);
+  // console.log('CoverageCard URL:', item.url);
   
   return (
     <a

@@ -60,7 +60,7 @@ const Sidebar = ({
 
         <div className="mb-6">
           <div className="bg-black text-white rounded-full px-6 py-3">
-            <span className="font-medium">Interview | Reference</span>
+            <span className="font-medium">Sentiment: Positive  | Negative </span>
           </div>
         </div>
       </div>

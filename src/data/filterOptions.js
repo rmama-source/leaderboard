@@ -26,7 +26,19 @@ const extractUniqueTopics = () => {
     });
   }
   
-  return Array.from(topicsSet).sort();
+  return Array.from(topicsSet).sort((a, b) => {
+  const startsWithLetter = str => /^[A-Za-z]/.test(str);
+
+  const aIsLetter = startsWithLetter(a);
+  const bIsLetter = startsWithLetter(b);
+
+  // Letters come first
+  if (aIsLetter && !bIsLetter) return -1;
+  if (!aIsLetter && bIsLetter) return 1;
+
+  // Same category → normal alphabetical sort
+  return a.localeCompare(b, undefined, { sensitivity: "base" });
+});
 };
 
 // Use real topics from your data
