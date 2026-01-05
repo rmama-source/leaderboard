@@ -8,7 +8,7 @@ import { searchCompetitorCoverage } from './services/braveSearchService';
 const App = () => {
   const [selectedLeader, setSelectedLeader] = useState(null);
   const [selectedTopics, setSelectedTopics] = useState([]);
-  const [selectedPublications, setSelectedPublications] = useState([]);
+  const [selectedPublication, setSelectedPublication] = useState(null);
   const [semaforCoverage, setSemaforCoverage] = useState([]);
   const [competitorCoverage, setCompetitorCoverage] = useState([]);
   const [isLoadingCompetitor, setIsLoadingCompetitor] = useState(false);
@@ -36,13 +36,15 @@ const App = () => {
     setSemaforCoverage(filteredSemafor);
 
     // Search competitor coverage (API call)
-    if (selectedPublications.length > 0) {
+    if (selectedPublication) {
       setIsLoadingCompetitor(true);
       try {
+        // Get more results for single publication (20)
         const results = await searchCompetitorCoverage(
           selectedLeader,
           selectedTopics,
-          selectedPublications
+          [selectedPublication],  // Pass as array with single publication
+          20
         );
         setCompetitorCoverage(results);
       } catch (error) {
@@ -56,6 +58,14 @@ const App = () => {
     }
   };
 
+  const clearFilters = () => {
+    setSelectedLeader(null);
+    setSelectedTopics([]);
+    setSelectedPublication(null);
+    setSemaforCoverage([]);
+    setCompetitorCoverage([]);
+  };
+
   return (
     <div className="flex h-screen bg-yellow-50">
       <Sidebar
@@ -63,14 +73,15 @@ const App = () => {
         setSelectedLeader={setSelectedLeader}
         selectedTopics={selectedTopics}
         setSelectedTopics={setSelectedTopics}
-        selectedPublications={selectedPublications}
-        setSelectedPublications={setSelectedPublications}
+        selectedPublication={selectedPublication}
+        setSelectedPublication={setSelectedPublication}
         onApply={applyFilters}
+        onClear={clearFilters}
       />
       
       <div className="flex-1 flex">
         <CoverageColumn
-          title="Semafor's Coverage"
+          title="Semafor Coverage"
           coverage={semaforCoverage}
           showPublication={false}
         />

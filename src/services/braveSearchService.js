@@ -2,6 +2,11 @@
 
 const BRAVE_API_KEY = import.meta.env.VITE_BRAVE_API_KEY;
 
+console.log('🔑 API Key loaded:', !!BRAVE_API_KEY);
+console.log('🔑 API Key length:', BRAVE_API_KEY?.length);
+console.log('🔑 API Key first 4 chars:', BRAVE_API_KEY?.substring(0, 4));
+console.log('🔑 API Key last 4 chars:', BRAVE_API_KEY?.substring(BRAVE_API_KEY.length - 4));
+
 // Detect environment and use appropriate endpoint
 const IS_PRODUCTION = import.meta.env.PROD;
 const API_ENDPOINT = IS_PRODUCTION 
@@ -69,7 +74,7 @@ const formatResults = (results, publication) => {
 };
 
 // Search a single publication
-const searchPublication = async (publication, leader, topics) => {
+const searchPublication = async (publication, leader, topics, count = 10) => {
   const query = buildSearchQuery(publication, leader, topics);
   
   if (!query) {
@@ -85,7 +90,7 @@ const searchPublication = async (publication, leader, topics) => {
     if (IS_PRODUCTION) {
       // Production: Use Vercel serverless function
       response = await fetch(
-        `${API_ENDPOINT}?q=${encodeURIComponent(query)}&count=10`,
+        `${API_ENDPOINT}?q=${encodeURIComponent(query)}&count=${count}`,
         {
           method: 'GET',
           headers: {
@@ -95,7 +100,7 @@ const searchPublication = async (publication, leader, topics) => {
       );
     } else {
       // Development: Use Vite proxy
-      const url = `${API_ENDPOINT}?q=${encodeURIComponent(query)}&count=10`;
+      const url = `${API_ENDPOINT}?q=${encodeURIComponent(query)}&count=${count}`;
       console.log('Full URL:', url);
       
       response = await fetch(url, {
@@ -122,7 +127,7 @@ const searchPublication = async (publication, leader, topics) => {
 };
 
 // Main function to search all selected publications
-export const searchCompetitorCoverage = async (leader, topics, publications) => {
+export const searchCompetitorCoverage = async (leader, topics, publications, count = 10) => {
   if (!publications || publications.length === 0) {
     return [];
   }
@@ -130,21 +135,23 @@ export const searchCompetitorCoverage = async (leader, topics, publications) => 
   console.log('Searching publications:', publications);
   console.log('Leader:', leader);
   console.log('Topics:', topics);
+  console.log('Results per publication:', count);
 
-  // Search all publications in parallel
-  const searchPromises = publications.map(pub => 
-    searchPublication(pub, leader, topics)
-  );
-
-  try {
-    const results = await Promise.all(searchPromises);
-    // Flatten array of arrays into single array
-    const allResults = results.flat();
+  // Search publications sequentially with delay to avoid rate limits
+  const results = [];
+  
+  for (let i = 0; i < publications.length; i++) {
+    const pub = publications[i];
+    const result = await searchPublication(pub, leader, topics, count);
+    results.push(result);
     
-    console.log(`Found ${allResults.length} competitor articles`);
-    return allResults;
-  } catch (error) {
-    console.error('Error in searchCompetitorCoverage:', error);
-    return [];
+    // Wait 1.1 seconds between requests to stay under 1 req/sec rate limit
+    if (i < publications.length - 1) {
+      await new Promise(resolve => setTimeout(resolve, 1100));
+    }
   }
+  
+  const allResults = results.flat();
+  console.log(`Found ${allResults.length} competitor articles`);
+  return allResults;
 };

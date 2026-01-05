@@ -3,6 +3,7 @@ import React from 'react';
 import Header from './Header';
 import LeaderInput from './LeaderInput';
 import FilterDropdown from './FilterDropdown';
+import SingleSelectFilter from './SingleSelectFilter';
 import { topics, publications } from '../data/filterOptions';
 
 const Sidebar = ({
@@ -10,23 +11,16 @@ const Sidebar = ({
   setSelectedLeader,
   selectedTopics,
   setSelectedTopics,
-  selectedPublications,
-  setSelectedPublications,
-  onApply
+  selectedPublication,
+  setSelectedPublication,
+  onApply,
+  onClear
 }) => {
   const toggleTopic = (topic) => {
     setSelectedTopics(prev => 
       prev.includes(topic) 
         ? prev.filter(t => t !== topic)
         : [...prev, topic]
-    );
-  };
-
-  const togglePublication = (pub) => {
-    setSelectedPublications(prev =>
-      prev.includes(pub)
-        ? prev.filter(p => p !== pub)
-        : [...prev, pub]
     );
   };
 
@@ -51,16 +45,16 @@ const Sidebar = ({
           searchable={true}
         />
 
-        <FilterDropdown
+        <SingleSelectFilter
           label="Publication"
           options={publications}
-          selectedOptions={selectedPublications}
-          onToggle={togglePublication}
+          selectedOption={selectedPublication}
+          onSelect={setSelectedPublication}
         />
 
         <div className="mb-6">
           <div className="bg-black text-white rounded-full px-6 py-3">
-            <span className="font-medium">Sentiment: Positive  | Negative </span>
+            <span className="font-medium">Sentiment: Positive | Negative</span>
           </div>
         </div>
       </div>
@@ -68,9 +62,15 @@ const Sidebar = ({
       <div className="p-6 flex-shrink-0 border-t-2 border-black bg-yellow-100">
         <button
           onClick={onApply}
-          className="w-full bg-black text-white rounded-full px-8 py-3 font-semibold hover:bg-gray-800 transition-colors"
+          className="w-full bg-black text-white rounded-full px-8 py-3 font-semibold hover:bg-gray-800 transition-colors mb-3"
         >
           Apply
+        </button>
+        <button
+          onClick={onClear}
+          className="w-full bg-white text-black rounded-full px-8 py-3 font-semibold border-2 border-black hover:bg-gray-100 transition-colors"
+        >
+          Clear All
         </button>
       </div>
     </div>

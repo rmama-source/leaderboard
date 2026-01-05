@@ -60,7 +60,7 @@ if (topics.length === 0) {
 
 export const publications = [
   'The New York Times',
-  'The Wall Street Journal',
+  // 'The Wall Street Journal',
   'The Washington Post',
   'CNN',
   'Politico',
