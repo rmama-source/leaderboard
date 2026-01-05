@@ -70,7 +70,7 @@ const App = () => {
       
       <div className="flex-1 flex">
         <CoverageColumn
-          title="Semafor Coverage"
+          title="Semafor's Coverage"
           coverage={semaforCoverage}
           showPublication={false}
         />
