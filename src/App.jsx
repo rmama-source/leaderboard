@@ -9,6 +9,7 @@ const App = () => {
   const [selectedLeader, setSelectedLeader] = useState(null);
   const [selectedTopics, setSelectedTopics] = useState([]);
   const [selectedPublication, setSelectedPublication] = useState(null);
+  const [selectedSentiment, setSelectedSentiment] = useState(null);
   const [semaforCoverage, setSemaforCoverage] = useState([]);
   const [competitorCoverage, setCompetitorCoverage] = useState([]);
   const [isLoadingCompetitor, setIsLoadingCompetitor] = useState(false);
@@ -30,6 +31,12 @@ const App = () => {
         item.allTopics && item.allTopics.some(topic =>
           selectedTopics.includes(topic)
         )
+      );
+    }
+
+    if (selectedSentiment) {
+      filteredSemafor = filteredSemafor.filter(item =>
+        item.sentiment === selectedSentiment
       );
     }
     
@@ -62,6 +69,7 @@ const App = () => {
     setSelectedLeader(null);
     setSelectedTopics([]);
     setSelectedPublication(null);
+    setSelectedSentiment(null);
     setSemaforCoverage([]);
     setCompetitorCoverage([]);
   };
@@ -75,6 +83,8 @@ const App = () => {
         setSelectedTopics={setSelectedTopics}
         selectedPublication={selectedPublication}
         setSelectedPublication={setSelectedPublication}
+        selectedSentiment={selectedSentiment}
+        setSelectedSentiment={setSelectedSentiment}
         onApply={applyFilters}
         onClear={clearFilters}
       />

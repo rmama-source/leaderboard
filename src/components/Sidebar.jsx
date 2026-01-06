@@ -4,6 +4,7 @@ import Header from './Header';
 import LeaderInput from './LeaderInput';
 import FilterDropdown from './FilterDropdown';
 import SingleSelectFilter from './SingleSelectFilter';
+import SentimentDial from './SentimentDial';
 import { topics, publications } from '../data/filterOptions';
 
 const Sidebar = ({
@@ -13,6 +14,8 @@ const Sidebar = ({
   setSelectedTopics,
   selectedPublication,
   setSelectedPublication,
+  selectedSentiment,
+  setSelectedSentiment,
   onApply,
   onClear
 }) => {
@@ -45,6 +48,7 @@ const Sidebar = ({
           searchable={true}
         />
 
+
         <SingleSelectFilter
           label="Publication"
           options={publications}
@@ -52,11 +56,17 @@ const Sidebar = ({
           onSelect={setSelectedPublication}
         />
 
-        <div className="mb-6">
+                <SentimentDial
+          selectedSentiment={selectedSentiment}
+          onSelect={setSelectedSentiment}
+        />
+
+
+        {/* <div className="mb-6">
           <div className="bg-black text-white rounded-full px-6 py-3">
-            <span className="font-medium">Sentiment: Positive | Negative</span>
+            <span className="font-medium">Interview | Reference</span>
           </div>
-        </div>
+        </div> */}
       </div>
 
       <div className="p-6 flex-shrink-0 border-t-2 border-black bg-yellow-100">
